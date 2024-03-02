@@ -14,6 +14,17 @@ WHERE APNT_YMD  LIKE '2022-05%'
 GROUP BY MCDP_CD
 ORDER BY COUNT(*) ASC, MCDP_CD ASC;
 
-alias 사용의 경우 띄어쓰기나 ASCII가 아닌 문자가 있으면 쿼리를 잘못 인식하므로 "(큰따옴표)를 사용
+alias 사용의 경우 띄어쓰기나 ASCII가 아닌 문자가 있으면 쿼리를 잘못 인식하므로 "(큰따옴표)"를 사용
 ORDER BY 절에는 컬럼 명 대신 ALIAS 명이나 컬럼 순서를 나타내는 정수를 혼용하여 사용할 수 있음. 하지만 정수 사용은 유지 보수에 좋지 않으므로 실제 컬럼 이름을 사용하겠습니다.
 
+문제
+REST_INFO 테이블에서 음식종류별로 즐겨찾기수가 가장 많은 식당의 음식 종류, ID, 식당 이름, 즐겨찾기수를 조회하는 SQL문을 작성해주세요. 이때 결과는 음식 종류를 기준으로 내림차순 정렬해주세요.
+서브쿼리 + 조인 사용
+SELECT R1.FOOD_TYPE, R1.REST_ID, R1.REST_NAME, R1.FAVORITES
+FROM REST_INFO R1
+JOIN (
+    SELECT FOOD_TYPE, MAX(FAVORITES) AS FAVORITES
+    FROM REST_INFO
+    GROUP BY FOOD_TYPE
+) R2 ON R1.FOOD_TYPE = R2.FOOD_TYPE AND R1.FAVORITES = R2.FAVORITES
+ORDER BY R1.FOOD_TYPE DESC;
